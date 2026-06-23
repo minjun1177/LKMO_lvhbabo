@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>LKMO - 한글 모스부호 학습</title>
+    <style>
+        /* 깔끔하고 직관적인 흑백 기반 디자인 */
+        body {
+            font-family: 'Courier New', Courier, monospace; /* 터미널이나 무전기 디스플레이 같은 느낌의 폰트 */
+            background-color: #ffffff;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            border: 2px solid #000;
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select, input, button, textarea {
+            font-family: inherit;
+            font-size: 16px;
+            padding: 8px;
+            border: 1px solid #000;
+            background-color: #fff;
+            color: #000;
+            border-radius: 0; /* 각진 느낌 유지 */
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            padding: 10px 20px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #000;
+            color: #fff;
+        }
+
+        button:disabled {
+            border-color: #ccc;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .practice-area {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #userInput {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            box-sizing: border-box;
+            font-size: 18px;
+        }
+
+        .status-bar {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px dashed #000;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>LKMO</h1>
+
+<div class="controls">
+<div class="control-group">
+            <label for="lessonSelect">레슨 (Koch Level)</label>
+            <select id="lessonSelect">
+                <option value="1">L1: ㅏ (.), ㅓ (-)</option>
+                <option value="2">L2: + ㄱ (.-..)</option>
+                <option value="3">L3: + ㄴ (..-.)</option>
+                <option value="4">L4: + ㅗ (.-)</option>
+                <option value="5">L5: + ㅜ (----)</option>
+                <option value="6">L6: + ㄷ (-...)</option>
+                <option value="7">L7: + ㄹ (---)</option>
+                <option value="8">L8: + ㅣ (..-)</option>
+                <option value="9">L9: + ㅡ (-..)</option>
+                <option value="10">L10: + ㅁ (--)</option>
+                <option value="11">L11: + ㅂ (.--)</option>
+                <option value="12">L12: + ㅅ (--.)</option>
+                <option value="13">L13: + ㅇ (-.-)</option>
+                <option value="14">L14: + ㅈ (.--.)</option>
+                <option value="15">L15: + ㅊ (-.-.)</option>
+                <option value="16">L16: + ㅋ (-..-)</option>
+                <option value="17">L17: + ㅌ (--..)</option>
+                <option value="18">L18: + ㅍ (---.)</option>
+                <option value="19">L19: + ㅎ (.---)</option>
+                <option value="20">L20: + ㅑ (..)</option>
+                <option value="21">L21: + ㅕ (...)</option>
+                <option value="22">L22: + ㅛ (-.)</option>
+                <option value="23">L23: + ㅠ (.-.)</option>
+                <option value="24">L24: + ㅐ (--.-)</option>
+                <option value="25">L25: + ㅔ (-.--)</option>
+            </select>
+        </div>
+            <div class="control-group">
+                <label for="timeInput">시간 (Time)</label>
+                <select id="timeInput">
+                    <option value="1">1분</option>
+                    <option value="2">2분</option>
+                    <option value="3">3분</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-panel" style="background: #f4f4f4; border: 1px solid #000; padding: 15px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                <label>Speed (문자 속도)</label>
+                <input type="range" id="charWpmInput" value="25" min="10" max="50" style="flex-grow: 1; margin: 0 15px;">
+                <span id="charWpmLabel" style="width: 60px; text-align: right;">25 WPM</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                <label>eff. Speed (유효 속도)</label>
+                <input type="range" id="effWpmInput" value="15" min="5" max="50" style="flex-grow: 1; margin: 0 15px;">
+                <span id="effWpmLabel" style="width: 60px; text-align: right;">15 WPM</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                <label>Frequency (주파수)</label>
+                <input type="range" id="freqInput" value="650" min="400" max="1000" step="10" style="flex-grow: 1; margin: 0 15px;">
+                <span id="freqLabel" style="width: 60px; text-align: right;">650 Hz</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label>Volume (볼륨)</label>
+                <input type="range" id="volInput" value="100" min="0" max="100" style="flex-grow: 1; margin: 0 15px;">
+                <span id="volLabel" style="width: 60px; text-align: right;">100 %</span>
+            </div>
+        </div>
+
+        <div class="practice-area">
+            <button id="startBtn">연습 시작 (Start Playback)</button>
+            <label for="userInput">수신 내용 입력:</label>
+            <textarea id="userInput" placeholder="소리를 듣고 모스부호를 입력하세요..." disabled></textarea>
+            <button id="checkBtn" disabled>결과 확인 (Check Answer)</button>
+        </div>
+
+        <div class="status-bar">
+            <span id="statusText">대기 중... (Ready)</span>
+            <span id="scoreText">정답률: -%</span>
+        </div>
+        <hr style="margin-top: 30px; border: 1px solid #ccc;">
+        
+        <div class="statistics-area">
+            <h3>내 연습 기록 (최근 10회)</h3>
+            <table id="statsTable" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14px;">
+                <thead>
+                    <tr style="background-color: #f0f0f0; border-bottom: 2px solid #000;">
+                        <th style="padding: 8px;">레슨</th>
+                        <th>문자(WPM)</th>
+                        <th>유효(WPM)</th>
+                        <th>정답률(%)</th>
+                        <th>날짜</th>
+                    </tr>
+                </thead>
+                <tbody id="statsBody">
+                    </tbody>
+            </table>
+            <button id="clearStatsBtn" style="margin-top: 10px; font-size: 12px; padding: 5px 10px; background-color: #eee; color: #333;">기록 초기화</button>
+        </div>
+    </div>
+
+<script>
+// 1. 기초 데이터: 한국어 표준 모스부호 26개 (자음 14, 모음 12)
+        const MORSE_KOR = {
+            'ㄱ': '.-..', 'ㄴ': '..-.', 'ㄷ': '-...', 'ㄹ': '---', 'ㅁ': '--',
+            'ㅂ': '.--', 'ㅅ': '--.', 'ㅇ': '-.-', 'ㅈ': '.--.', 'ㅊ': '-.-.',
+            'ㅋ': '-..-', 'ㅌ': '--..', 'ㅍ': '---.', 'ㅎ': '.---',
+            'ㅏ': '.', 'ㅑ': '..', 'ㅓ': '-', 'ㅕ': '...', 'ㅗ': '.-',
+            'ㅛ': '-.', 'ㅜ': '----', 'ㅠ': '.-.', 'ㅡ': '-..', 'ㅣ': '..-',
+            'ㅐ': '--.-', 'ㅔ': '-.--'
+        };
+
+        // HTML의 select option 순서와 1:1로 대응되는 코흐 레슨 배열
+        // L1(value="1")은 index 0과 1의 두 글자('ㅏ', 'ㅓ')를 가져옵니다.
+        const kochSequence = [
+            'ㅏ', 'ㅓ', 'ㄱ', 'ㄴ', 'ㅗ', 'ㅜ', 'ㄷ', 'ㄹ', 'ㅣ', 'ㅡ', 
+            'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ', 
+            'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅐ', 'ㅔ'
+        ];
+
+        const startBtn = document.getElementById('startBtn');
+        const checkBtn = document.getElementById('checkBtn');
+        const userInput = document.getElementById('userInput');
+        const statusText = document.getElementById('statusText');
+        const lessonSelect = document.getElementById('lessonSelect');
+        const timeInput = document.getElementById('timeInput');
+
+        // 슬라이더 요소 및 라벨 가져오기
+        const charWpmInput = document.getElementById('charWpmInput');
+        const effWpmInput = document.getElementById('effWpmInput');
+        const freqInput = document.getElementById('freqInput');
+        const volInput = document.getElementById('volInput');
+        
+        // 슬라이더를 움직일 때마다 우측 숫자 텍스트 업데이트
+        const updateLabels = () => {
+            document.getElementById('charWpmLabel').innerText = `${charWpmInput.value} WPM`;
+            document.getElementById('effWpmLabel').innerText = `${effWpmInput.value} WPM`;
+            document.getElementById('freqLabel').innerText = `${freqInput.value} Hz`;
+            document.getElementById('volLabel').innerText = `${volInput.value} %`;
+            
+            // 유효 속도가 문자 속도보다 높아지지 않도록 강제 제한 (논리적 오류 방지)
+            if (parseInt(effWpmInput.value) > parseInt(charWpmInput.value)) {
+                effWpmInput.value = charWpmInput.value;
+                document.getElementById('effWpmLabel').innerText = `${effWpmInput.value} WPM`;
+            }
+        };
+        
+        charWpmInput.addEventListener('input', updateLabels);
+        effWpmInput.addEventListener('input', updateLabels);
+        freqInput.addEventListener('input', updateLabels);
+        volInput.addEventListener('input', updateLabels);
+
+        let audioCtx;
+        let currentProblem = "";
+
+        // 문제 생성 (유효 속도 기준으로 분량 계산)
+        function generateProblem(level, effWpm, minutes) {
+            const allowedChars = kochSequence.slice(0, parseInt(level) + 1);
+            const totalGroups = effWpm * minutes; 
+            let result = [];
+            for (let i = 0; i < totalGroups; i++) {
+                let group = "";
+                for (let j = 0; j < 5; j++) {
+                    const randomIndex = Math.floor(Math.random() * allowedChars.length);
+                    group += allowedChars[randomIndex];
+                }
+                result.push(group);
+            }
+            return result.join(" "); 
+        }
+
+        // 파른스워스 방식이 적용된 고도화된 오디오 스케줄러
+        function playSequence(text, charWpm, effWpm, freq, volRatio) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // 부호 자체의 속도 (빠름)
+            const charDotTime = 1.2 / charWpm; 
+            // 글자/단어 사이 공백의 속도 (느림)
+            const spaceDotTime = 1.2 / effWpm; 
+            
+            // LCWO의 'Edge' 설정과 유사한 부드러운 램프 타임 (파핑 노이즈 방지용 5ms)
+            const edgeTime = 0.005; 
+
+            let time = audioCtx.currentTime + 0.5;
+
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.value = freq; // 사용자 주파수 적용
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                
+                if (char === ' ') {
+                    // 단어 간격: 파른스워스 기준 공백 적용 (기본 3 + 4 = 7단점)
+                    time += spaceDotTime * 4;
+                    continue;
+                }
+
+                const morse = MORSE_KOR[char];
+                if (morse) {
+                    for (let j = 0; j < morse.length; j++) {
+                        const symbol = morse[j];
+                        const duration = (symbol === '.') ? charDotTime : charDotTime * 3;
+
+                        // Edge 곡선 처리: 수직 상승/하락 대신 부드러운 경사(Ramp)를 주어 틱틱거리는 소리 제거
+                        gainNode.gain.setValueAtTime(0, time);
+                        gainNode.gain.linearRampToValueAtTime(volRatio, time + edgeTime);
+                        gainNode.gain.setValueAtTime(volRatio, time + duration - edgeTime);
+                        gainNode.gain.linearRampToValueAtTime(0, time + duration);
+
+                        // 기호 내 간격(1단점)은 문자 속도에 맞게 짧게 유지
+                        time += duration + charDotTime; 
+                    }
+                    // 글자 간 간격(3단점)은 유효 속도에 맞게 늘리기 (루프 끝에서 추가된 1단점을 제외한 값)
+                    time += (spaceDotTime * 3) - charDotTime; 
+                }
+            }
+
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(time);
+            return (time - audioCtx.currentTime) * 1000; 
+        }
+
+        // 연습 시작 이벤트 리스너 업데이트
+        startBtn.addEventListener('click', () => {
+            const level = lessonSelect.value;
+            const minutes = parseInt(timeInput.value);
+            
+            const charWpm = parseInt(charWpmInput.value);
+            const effWpm = parseInt(effWpmInput.value);
+            const freq = parseInt(freqInput.value);
+            const volRatio = parseInt(volInput.value) / 100;
+
+            currentProblem = generateProblem(level, effWpm, minutes); 
+            console.log("정답:", currentProblem); 
+
+            statusText.innerText = "재생 중... (Playing)";
+            startBtn.disabled = true; 
+            userInput.disabled = false; 
+            userInput.value = "";
+            checkBtn.disabled = false;
+
+            // 4개의 상세 파라미터를 넘겨줍니다.
+            const playDurationMs = playSequence(currentProblem, charWpm, effWpm, freq, volRatio);
+
+            setTimeout(() => {
+                statusText.innerText = "수신 완료. 채점 버튼을 누르세요.";
+                startBtn.disabled = false;
+            }, playDurationMs);
+        });
+
+// [수정된 부분] 5. '결과 확인' 버튼 이벤트 (채점 및 기록 저장)
+        checkBtn.addEventListener('click', () => {
+            const userAnswer = userInput.value.replace(/\s+/g, "");
+            const expectedAnswer = currentProblem.replace(/\s+/g, "");
+
+            let correctCount = 0;
+            const totalCount = expectedAnswer.length;
+
+            for (let i = 0; i < totalCount; i++) {
+                if (userAnswer[i] && userAnswer[i] === expectedAnswer[i]) correctCount++;
+            }
+
+            const accuracy = totalCount > 0 ? Math.floor((correctCount / totalCount) * 100) : 0;
+            
+            // UI 업데이트
+            statusText.innerText = "채점 완료 (Done)";
+            const scoreTextElement = document.getElementById('scoreText');
+            scoreTextElement.innerText = `정답률: ${accuracy}%`;
+
+            if (accuracy >= 90) {
+                scoreTextElement.style.color = "green";
+                alert(`훌륭합니다! 정답률 ${accuracy}%입니다.`);
+            } else {
+                scoreTextElement.style.color = "red";
+                alert(`정답률 ${accuracy}%입니다.\n\n정답: ${currentProblem}\n입력: ${userInput.value}`);
+            }
+
+            // --- [새로 추가된 통계 저장 로직] ---
+            saveRecord(lessonSelect.value, charWpmInput.value, effWpmInput.value, accuracy);
+            updateStatsTable(); // 표 새로고침
+            // ------------------------------------
+
+            userInput.disabled = true;
+            checkBtn.disabled = true;
+        });
+
+        // 6. 기록 저장 및 불러오기 함수
+        function saveRecord(lesson, charWpm, effWpm, accuracy) {
+            // 현재 시간을 'YYYY-MM-DD HH:MM' 형식으로 만들기
+            const now = new Date();
+            const dateStr = now.getFullYear() + '-' + 
+                            String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                            String(now.getDate()).padStart(2, '0') + ' ' + 
+                            String(now.getHours()).padStart(2, '0') + ':' + 
+                            String(now.getMinutes()).padStart(2, '0');
+
+            // 새 기록 객체 생성
+            const newRecord = {
+                lesson: lesson,
+                charWpm: charWpm,
+                effWpm: effWpm,
+                accuracy: accuracy,
+                date: dateStr
+            };
+
+            // localStorage에서 기존 기록을 가져오고, 없으면 빈 배열 생성
+            let history = JSON.parse(localStorage.getItem('cwHistory')) || [];
+            
+            // 새 기록을 맨 앞에 추가
+            history.unshift(newRecord);
+            
+            // 브라우저에 문자열 형태로 저장
+            localStorage.setItem('cwHistory', JSON.stringify(history));
+        }
+
+        // 7. 통계 표 그리기 함수
+        function updateStatsTable() {
+            const tbody = document.getElementById('statsBody');
+            tbody.innerHTML = ''; // 기존 표 내용 비우기
+
+            let history = JSON.parse(localStorage.getItem('cwHistory')) || [];
+            
+            // 최근 10개까지만 표시
+            const displayCount = Math.min(history.length, 10);
+
+            for (let i = 0; i < displayCount; i++) {
+                const record = history[i];
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = "1px solid #eee";
+                
+                // 정답률이 90 이상이면 초록색 아이콘(X 대신 O 혹은 V) 느낌으로 처리할 수도 있습니다.
+                const accColor = record.accuracy >= 90 ? "green" : (record.accuracy < 50 ? "red" : "black");
+
+                tr.innerHTML = `
+                    <td style="padding: 8px;">L${record.lesson}</td>
+                    <td>${record.charWpm}</td>
+                    <td>${record.effWpm}</td>
+                    <td style="font-weight: bold; color: ${accColor};">${record.accuracy}%</td>
+                    <td style="font-size: 12px; color: #666;">${record.date}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+
+        // 8. 기록 초기화 버튼 이벤트
+        document.getElementById('clearStatsBtn').addEventListener('click', () => {
+            if (confirm("정말 모든 연습 기록을 삭제하시겠습니까?")) {
+                localStorage.removeItem('cwHistory');
+                updateStatsTable();
+            }
+        });
+
+        // 페이지 로딩 시 표 한 번 그려주기
+        updateStatsTable();
+    </script>
+
+</body>
+</html>
