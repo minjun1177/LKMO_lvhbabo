@@ -328,32 +328,47 @@
             return (time - audioCtx.currentTime) * 1000; 
         }
 
-        // 연습 시작 이벤트 리스너 업데이트
-        startBtn.addEventListener('click', () => {
+// 1. 레슨별 신규 추가 글자 정의 (인덱스 순서)
+        function getNewCharsForLevel(level) {
+            // L1(레슨 1)은 2개(ㅏ,ㅓ), 나머지는 level-1 인덱스의 글자가 신규입니다.
+            if (level == 1) return ['ㅏ', 'ㅓ'];
+            return [kochSequence[level - 1]];
+        }
+
+        startBtn.addEventListener('click', async () => {
             const level = lessonSelect.value;
-            const minutes = parseInt(timeInput.value);
-            
-            const charWpm = parseInt(charWpmInput.value);
+            const wpm = parseInt(charWpmInput.value);
             const effWpm = parseInt(effWpmInput.value);
             const freq = parseInt(freqInput.value);
-            const volRatio = parseInt(volInput.value) / 100;
+            const vol = parseInt(volInput.value) / 100;
 
-            currentProblem = generateProblem(level, effWpm, minutes); 
-            console.log("정답:", currentProblem); 
+            // 1. 신규 글자 프리뷰 재생
+            const newChars = getNewCharsForLevel(level);
+            statusText.innerText = `레슨 ${level} 신규 글자 재생 중: ${newChars.join(", ")}`;
+            startBtn.disabled = true;
 
-            statusText.innerText = "재생 중... (Playing)";
-            startBtn.disabled = true; 
-            userInput.disabled = false; 
-            userInput.value = "";
-            checkBtn.disabled = false;
+            // 프리뷰 재생 (글자당 3번 반복)
+            const previewText = newChars.join(" ") + " " + newChars.join(" ") + " " + newChars.join(" ");
+            const previewDuration = playSequence(previewText, wpm, wpm, freq, vol);
 
-            // 4개의 상세 파라미터를 넘겨줍니다.
-            const playDurationMs = playSequence(currentProblem, charWpm, effWpm, freq, volRatio);
+            // 프리뷰가 끝난 후 실제 문제 재생
+            setTimeout(async () => {
+                statusText.innerText = "연습 문제 재생 시작...";
+                
+                const minutes = parseInt(timeInput.value);
+                currentProblem = generateProblem(level, effWpm, minutes);
+                console.log("정답:", currentProblem);
 
-            setTimeout(() => {
-                statusText.innerText = "수신 완료. 채점 버튼을 누르세요.";
-                startBtn.disabled = false;
-            }, playDurationMs);
+                const playDuration = playSequence(currentProblem, wpm, effWpm, freq, vol);
+
+                setTimeout(() => {
+                    statusText.innerText = "수신 완료. 채점 버튼을 누르세요.";
+                    startBtn.disabled = false;
+                    userInput.disabled = false;
+                    userInput.focus();
+                    checkBtn.disabled = false;
+                }, playDuration);
+            }, previewDuration + 1000); // 프리뷰 후 1초 대기
         });
 
 // [수정된 부분] 5. '결과 확인' 버튼 이벤트 (채점 및 기록 저장)
