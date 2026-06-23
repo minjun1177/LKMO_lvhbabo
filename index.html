@@ -104,10 +104,17 @@
         setTimeout(() => {
             const groups = eff * parseInt(document.getElementById('timeInput').value);
             let problem = [];
-            for(let i=0; i<groups; i++) {
-                let g=""; for(let j=0; j<5; j++) g += kochSequence[Math.floor(Math.random()*(parseInt(level)+1))];
-                problem.push(g);
+            const allowedCount = parseInt(level) + 1; 
+
+        for(let i = 0; i < groups; i++) {
+            let g = ""; 
+            for(let j = 0; j < 5; j++) {
+                // 0부터 allowedCount-1까지의 정수 인덱스를 무작위로 뽑습니다.
+                const randomIndex = Math.floor(Math.random() * allowedCount);
+                g += kochSequence[randomIndex];
             }
+            problem.push(g);
+        }
             window.currentProblem = problem.join(" ");
             const duration = playSequence(window.currentProblem, wpm, eff, freq, 0.5);
             document.getElementById('userInput').disabled = false;
