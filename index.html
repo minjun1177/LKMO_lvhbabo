@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>KoLCWO - 종합 한글 모스부호 학습기</title>
+    <title>LKMO - 종합 한글 모스부호 학습기</title>
     <style>
         body { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #000; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         .container { width: 100%; max-width: 600px; border: 2px solid #000; padding: 20px; }
@@ -26,7 +26,7 @@
 <body>
 
 <div class="container">
-    <h1 style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px;">KoLCWO</h1>
+    <h1 style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px;">LKMO</h1>
     
     <div class="controls">
         <!-- 새로운 기능: 훈련 모드 선택 -->
@@ -51,9 +51,9 @@
         <div class="control-group">
             <label>훈련 분량 (시간/개수)</label>
             <select id="timeInput">
-                <option value="1">1분 (문장 1개)</option>
-                <option value="2">2분 (문장 2개)</option>
-                <option value="3">3분 (문장 3개)</option>
+                <option value="1">문장 1개</option>
+                <option value="2">문장 2개</option>
+                <option value="3">문장 3개</option>
             </select>
         </div>
     </div>
@@ -100,7 +100,7 @@
     const kochSequence = ['ㅏ','ㅓ','ㄱ','ㄴ','ㅗ','ㅜ','ㄷ','ㄹ','ㅣ','ㅡ','ㅁ','ㅂ','ㅅ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ','ㅑ','ㅕ','ㅛ','ㅠ','ㅐ','ㅔ'];
 
     let WORDS_DB = ["무선", "전파"]; // 파일 로딩 실패 시 작동할 기본값
-    let SENTENCES_DB = ["여기는 씨큐"]; 
+    let SENTENCES_DB = ["여기는 인천광역시"]; 
 
     // 외부 txt 파일에서 데이터를 읽어오는 함수
     async function loadExternalData() {
