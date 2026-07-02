@@ -236,10 +236,12 @@ const leaderboardOpen = document.getElementById('leaderboardopen');
 const leaderboardClose = document.getElementById('leaderboardClose');
 const leaderboardBody = document.getElementById('leaderboardBody');
 
+const API_URL = 'lkmo.delzb.app'; // Cloudflare Pages will serve both frontend and API on the same domain
+
 async function loadLeaderboard() {
     leaderboardBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px; color:#666;">불러오는 중...</td></tr>';
     try {
-        const response = await fetch('/api/leaderboard');
+        const response = await fetch(`${API_URL}/api/leaderboard`);
         const records = await response.json();
         
         if (!records || records.length === 0) {
@@ -272,7 +274,7 @@ async function saveToLeaderboard(mode, acc) {
     if (!name) name = "Anonymous";
     
     try {
-        await fetch('/api/leaderboard', {
+        await fetch(`${API_URL}/api/leaderboard`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

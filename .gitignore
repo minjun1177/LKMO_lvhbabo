@@ -1,3 +1,5 @@
 package-lock.json
 node_modules/
 leaderboard.json
+.wrangler/
+functions/
