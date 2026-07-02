@@ -236,7 +236,7 @@ const leaderboardOpen = document.getElementById('leaderboardopen');
 const leaderboardClose = document.getElementById('leaderboardClose');
 const leaderboardBody = document.getElementById('leaderboardBody');
 
-const API_URL = 'lkmo.delzb.app'; // Cloudflare Pages will serve both frontend and API on the same domain
+const API_URL = ''; // Leave empty to use the same domain (e.g. https://lkmo.delzb.app/api/leaderboard)
 
 async function loadLeaderboard() {
     leaderboardBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px; color:#666;">불러오는 중...</td></tr>';

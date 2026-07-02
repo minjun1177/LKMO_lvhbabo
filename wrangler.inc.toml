@@ -1,0 +1,7 @@
+name = "lkmo"
+pages_build_output_dir = "."
+compatibility_date = "2026-07-03"
+
+[[kv_namespaces]]
+binding = "LEADERBOARD_KV"
+id = "YOUR_KV_NAMESPACE_ID_HERE"
