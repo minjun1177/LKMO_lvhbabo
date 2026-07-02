@@ -1,0 +1,25 @@
+{
+  "name": "lkmo_lvhbabo",
+  "version": "1.0.0",
+  "description": "origin repo: https://github.com/siwoohan10/LearnKoreanMorsecodeOnline",
+  "homepage": "https://github.com/minjun1177/LKMO_lvhbabo#readme",
+  "bugs": {
+    "url": "https://github.com/minjun1177/LKMO_lvhbabo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/minjun1177/LKMO_lvhbabo.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
